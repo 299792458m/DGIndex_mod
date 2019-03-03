@@ -1,2 +1,9 @@
 # DGIndex_mod
-a fork of maki's DGIndex
+a fork of maki's DGIndex 0.1.1
+
+mod190303
+インデックス生成処理に必要以上に時間がかかってるんじゃね？と思ったので、
+d2v生成処理の無駄を省いて速度向上(自分の環境では100MB/s→300MB/sにUP)
+
+d2v生成以外のデバッグをしていない・その他の影響確認をちゃんとしてない・あまりする気もないのでexperimental
+

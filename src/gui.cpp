@@ -348,11 +348,11 @@ NEW_VERSION:
     }
 
     // Allocate stream buffer.
-    Rdbfr = (unsigned char *) malloc(BUFFER_SIZE);
+    Rdbfr = (unsigned char *) _aligned_malloc(BUFFER_SIZE,64);
     if (Rdbfr == NULL)
     {
         MessageBox(hWnd, "Couldn't allocate stream buffer using configured size.\nTrying default size.", NULL, MB_OK | MB_ICONERROR);
-        Rdbfr = (unsigned char *) malloc(32 * SECTOR_SIZE);
+        Rdbfr = (unsigned char *) _aligned_malloc(32 * SECTOR_SIZE,64);
         if (Rdbfr == NULL)
         {
             MessageBox(hWnd, "Couldn't allocate stream buffer using default size.\nExiting.", NULL, MB_OK | MB_ICONERROR);
@@ -2401,7 +2401,7 @@ right_arrow:
             for (i=0; i<MAX_FILE_NUMBER; i++)
                 free(Infilename[i]);
 
-            free(Rdbfr);
+			_aligned_free(Rdbfr);
 
             DeleteObject(splash);
             ReleaseDC(hWnd, hDC);
@@ -4576,11 +4576,11 @@ void OutputProgress(int progr)
         DWORD written;
 
         if (progr == 10000)
-            sprintf(percent, "DGIndex: [100%%] - FINISHED                   \n");
-        else if(progr == -1)
+			sprintf(percent, "DGIndex: [100%%] - FINISHED                   \n");
+		else if(progr == -1)
             sprintf(percent, "DGIndex: [%.2f%%] - Interrupted              \n", lastprogress / 100.0);
         else
-            sprintf(percent, "DGIndex: [%.2f%%] elapsed, eta %d:%02d:%02d\r", progr / 100.0
+            sprintf(percent, "DGIndex: [%.2f%%] elapsed, eta %d:%02d:%02d         \r", progr / 100.0
                     , remain/3600, (remain%3600)/60, remain%60);
         WriteFile(GetStdHandle(STD_OUTPUT_HANDLE), percent, strlen(percent), &written, NULL);
         lastprogress = progr;

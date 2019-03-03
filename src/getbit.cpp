@@ -547,17 +547,20 @@ retry_sync:
             // We can't check so just accept this sync byte.
         }
 
-        // Record the location of the start of the packet. This will be used
+		/* 毎パケットごとに処理する必要はない(無駄に時間がかかる)のでGOP毎？に変更
+		// Record the location of the start of the packet. This will be used
         // for indexing when an I frame is detected.
-        if (D2V_Flag)
+		if (D2V_Flag)
         {
             PackHeaderPosition = _telli64(Infile[CurrentFile])
                                  - (__int64)BUFFER_SIZE + (__int64)Rdptr - (__int64)Rdbfr - 1;
-        }
-        // For M2TS (blueray) files, index the extra 4 bytes in front of the sync byte,
-        // because DGDecode will expect to see them.
-        if (TransportPacketSize == 192)
-            PackHeaderPosition -= 4;
+
+			// For M2TS (blueray) files, index the extra 4 bytes in front of the sync byte,
+			// because DGDecode will expect to see them.
+			if (TransportPacketSize == 192)
+				PackHeaderPosition -= 4;
+
+        }*/
         --Packet_Length; // swallow the sync_byte
 
         code = Get_Short();
@@ -703,6 +706,7 @@ retry_sync:
             Bitrate_Monitor += (Rdmax - Rdptr);
             if (AudioOnly_Flag)
                 SKIP_TRANSPORT_PACKET_BYTES(Packet_Length);
+			PackSkipedLength=Packet_Length;
             return;
         }
 
@@ -1453,7 +1457,8 @@ oops2:
         // fallthrough case
         // skip remaining bytes in current packet
         SKIP_TRANSPORT_PACKET_BYTES(Packet_Length);
-    }
+		PackSkipedLength=Packet_Length;
+	}
 }
 
 // PVA packet data structure.

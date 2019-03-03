@@ -176,6 +176,7 @@ do_rip_play:
         }
     }
 
+	//入力ファイルチェック・情報収集
     // Check validity of the input file and collect some needed information.
     if (!Check_Flag)
     {
@@ -326,7 +327,8 @@ try_again:
 
     Frame_Rate = (FO_Flag==FO_FILM) ? frame_rate * 0.8 : frame_rate;
 
-    if (D2V_Flag)
+	//D2Vファイルのヘッダ部分を書いていく？
+	if (D2V_Flag)
     {
         i = NumLoadedFiles;
 
@@ -445,7 +447,8 @@ try_again:
         Stop_Flag = false;
     }
 
-    // Start normal decoding from the start position.
+	//ファイル先頭からIフレームを探す
+	// Start normal decoding from the start position.
     if (Timestamps)
     {
         StartLogging_Flag = 1;
@@ -475,11 +478,20 @@ try_again:
     process.file = d2v_current.file;
     process.lba = d2v_current.lba;
 
-    Decode_Picture();
+	__try
+	{
+		Decode_Picture();
+	}
+	__except (EXCEPTION_EXECUTE_HANDLER)
+	{
+		if (MessageBox(hWnd, "Caught an exception during decoding! Continue?", "Exception!", MB_YESNO | MB_ICONERROR) != IDYES)
+			ThreadKill(MISC_KILL);
+	}
 
     timing.op = timing.mi = timeGetTime();
 
-    field = 0;
+	//ここから本番 d2vの本体部を書いていく
+	field = 0;
     for (;;)
     {
         Get_Hdr(0);
@@ -489,7 +501,17 @@ try_again:
             Write_Frame(current_frame, d2v_current, Frame_Number - 1);
             ThreadKill(MISC_KILL);
         }
-        Decode_Picture();
+
+		__try
+		{        
+			Decode_Picture();
+		}
+		__except (EXCEPTION_EXECUTE_HANDLER)
+		{
+			if (MessageBox(hWnd, "Caught an exception during decoding! Continue?", "Exception!", MB_YESNO | MB_ICONERROR) != IDYES)
+				ThreadKill(MISC_KILL);
+		}
+
         field ^= 1;
         if (Stop_Flag && (!field || picture_structure == FRAME_PICTURE))
         {

@@ -148,7 +148,7 @@ int Get_Hdr(int mode)
         // Look for next_start_code.
         if (Stop_Flag == true)
             return 1;
-        next_start_code();
+        next_start_code();	//パケット読み込み・処理(-->FlushBuffer(All)->FillNext->NextPacket) FlushuBufferAllでNextパケットはCurrentになる
 
         code = Show_Bits(32);
         switch (code)
@@ -160,8 +160,21 @@ int Get_Hdr(int mode)
                 // Index the location of the sequence header for the D2V file.
                 // We prefer to index the sequence header corresponding to this
                 // GOP, but if one doesn't exist, we index the picture header of the I frame.
-                if (SystemStream_Flag != ELEMENTARY_STREAM)
-                    d2v_current.position = CurrentPackHeaderPosition;
+                if (SystemStream_Flag != ELEMENTARY_STREAM){
+					//ATSC transport(*.ts)
+					if (SystemStream_Flag == TRANSPORT_STREAM)
+					{
+						//ファイルポインタはバッファの終端、rdptrはパケットの先頭になっている ptrは32bitなので注意(ファイルポインタは2Gを超える)
+						CurrentPackHeaderPosition = _telli64(Infile[CurrentFile]) - BUFFER_SIZE + (Rdptr - Rdbfr)
+													- TransportPacketSize + CurrentPackSkipedLength - 8 + (32 - BitsLeft)/8;
+
+					}
+					//PVA transport 同じようにやれるけど、サンプルがなく確認ができないのでそのまま(Next_PVA_Packetも変えてない)
+					//else if (SystemStream_Flag == PVA_STREAM)
+					//ES transport (*.vob?) 本関数前のコメントにもある通り直接計算してる
+
+					d2v_current.position = CurrentPackHeaderPosition;
+				}
                 else
                 {
 //                  dprintf("DGIndex: Index sequence header at %d\n", Rdptr - 8 + (32 - BitsLeft)/8);
@@ -189,8 +202,13 @@ int Get_Hdr(int mode)
                 break;
 
             case PICTURE_START_CODE:
-                if (SystemStream_Flag != ELEMENTARY_STREAM)
-                    position = CurrentPackHeaderPosition;
+                if (SystemStream_Flag != ELEMENTARY_STREAM){
+					if (SystemStream_Flag == TRANSPORT_STREAM){
+						CurrentPackHeaderPosition = _telli64(Infile[CurrentFile]) - BUFFER_SIZE + (Rdptr - Rdbfr)
+													- TransportPacketSize + CurrentPackSkipedLength - 8 + (32 - BitsLeft)/8;
+					}
+					position = CurrentPackHeaderPosition;
+				}
                 else
                     position = _telli64(Infile[CurrentFile])
                                            - (BUFFER_SIZE - (Rdptr - Rdbfr))

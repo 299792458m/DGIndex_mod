@@ -36,6 +36,7 @@ void Next_File(void);
 GXTN unsigned char *Rdbfr, *Rdptr, *Rdmax;
 GXTN unsigned int BitsLeft, CurrentBfr, NextBfr, Val, Read;
 GXTN __int64 CurrentPackHeaderPosition;
+GXTN __int64 CurrentPackSkipedLength;
 
 __forceinline static unsigned int Show_Bits(unsigned int N)
 {
@@ -113,6 +114,7 @@ __forceinline static void Fill_Next()
     }
 
     CurrentPackHeaderPosition = PackHeaderPosition;
+	CurrentPackSkipedLength = PackSkipedLength;
     if (SystemStream_Flag != ELEMENTARY_STREAM && Rdptr > Rdmax - 4 && !AudioOnly_Flag)
     {
         if (Rdptr >= Rdmax)

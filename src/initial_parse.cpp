@@ -36,7 +36,7 @@ static unsigned char get_byte(void);
 static int file;
 static int state, found;
 // Should hold maximum size PES packet.
-static unsigned char buffer[256000];
+static unsigned char buffer[1048576];
 static int buffer_length, buffer_ndx;
 static int EOF_reached;
 
