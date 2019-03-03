@@ -178,10 +178,8 @@ int Get_Hdr(int mode)
                 else
                 {
 //                  dprintf("DGIndex: Index sequence header at %d\n", Rdptr - 8 + (32 - BitsLeft)/8);
-                    d2v_current.position = _telli64(Infile[CurrentFile])
-                                           - (BUFFER_SIZE - (Rdptr - Rdbfr))
-                                           - 8
-                                           + (32 - BitsLeft)/8;
+                    d2v_current.position = _telli64(Infile[CurrentFile]) - BUFFER_SIZE + (Rdptr - Rdbfr)
+                                           - 8 + (32 - BitsLeft)/8;
                 }
                 Get_Bits(32);
                 sequence_header();
@@ -210,10 +208,8 @@ int Get_Hdr(int mode)
 					position = CurrentPackHeaderPosition;
 				}
                 else
-                    position = _telli64(Infile[CurrentFile])
-                                           - (BUFFER_SIZE - (Rdptr - Rdbfr))
-                                           - 8
-                                           + (32 - BitsLeft)/8;
+                    position = _telli64(Infile[CurrentFile]) - BUFFER_SIZE + (Rdptr - Rdbfr)
+                                           - 8 + (32 - BitsLeft)/8;
                 Get_Bits(32);
                 picture_header(position, HadSequenceHeader, HadGopHeader);
                 return 0;

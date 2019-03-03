@@ -1,0 +1,146 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="src\AC3Dec\bit_allocate.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="src\AC3Dec\bitstream.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="src\AC3Dec\coeff.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="src\AC3Dec\crc.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="src\d2vparse.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="src\AC3Dec\decode.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="src\AC3Dec\downmix.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="src\AC3Dec\exponent.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="src\getbit.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="src\gethdr.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="src\getpic.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="src\gui.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="src\idctfpu.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="src\idctref.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="src\AC3Dec\imdct.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="src\initial_parse.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="src\misc.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="src\motion.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="src\mpeg2dec.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="src\norm.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="src\AC3Dec\parse.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="src\parse_cli.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="src\pat.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="src\AC3Dec\rematrix.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="src\AC3Dec\sanity_check.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="src\store.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="src\strverscmp.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="src\wavefs44.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="src\AC3Dec\ac3.h">
+      <Filter>Header</Filter>
+    </ClInclude>
+    <ClInclude Include="src\AC3Dec\bitstream.h">
+      <Filter>Header</Filter>
+    </ClInclude>
+    <ClInclude Include="src\filter.h">
+      <Filter>Header</Filter>
+    </ClInclude>
+    <ClInclude Include="src\getbit.h">
+      <Filter>Header</Filter>
+    </ClInclude>
+    <ClInclude Include="src\global.h">
+      <Filter>Header</Filter>
+    </ClInclude>
+    <ClInclude Include="src\misc.h">
+      <Filter>Header</Filter>
+    </ClInclude>
+    <ClInclude Include="src\pat.h">
+      <Filter>Header</Filter>
+    </ClInclude>
+    <ClInclude Include="src\resource.h">
+      <Filter>Header</Filter>
+    </ClInclude>
+    <ClInclude Include="src\skl_nasm.h">
+      <Filter>asm</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="src\simple_idct_mmx.asm">
+      <Filter>asm</Filter>
+    </CustomBuild>
+    <CustomBuild Include="src\skl_dct_sse.asm">
+      <Filter>asm</Filter>
+    </CustomBuild>
+    <CustomBuild Include="src\idctmmx.asm">
+      <Filter>asm</Filter>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="src\gui.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="src\movie.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Header">
+      <UniqueIdentifier>{83e05603-8f3b-44d6-9b92-edd8a87bdf4f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source">
+      <UniqueIdentifier>{b23b255e-9f6b-48ff-8160-5f6ae29b468f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="asm">
+      <UniqueIdentifier>{2c3bde82-7506-4ff1-ab76-b880eebe3a18}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

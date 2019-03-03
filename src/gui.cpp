@@ -508,7 +508,7 @@ NEW_VERSION:
         // Look at the first non-white-space character.
         // If it is a '-' we have CLI invocation, else
         // we have "Open With" invocation.
-        while (*ptr == ' ' && *ptr == '\t') ptr++;
+        while (*ptr == ' ' || *ptr == '\t') ptr++;
         if (*ptr != '-')
         {
             // "Open With" invocation.
