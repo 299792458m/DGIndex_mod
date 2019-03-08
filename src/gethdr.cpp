@@ -148,9 +148,35 @@ int Get_Hdr(int mode)
         // Look for next_start_code.
         if (Stop_Flag == true)
             return 1;
-        next_start_code();	//パケット読み込み・処理(-->FlushBuffer(All)->FillNext->NextPacket) FlushuBufferAllでNextパケットはCurrentになる
+        //next_start_code();	//パケット読み込み・処理(-->FlushBuffer(All)->FillNext->NextPacket) FlushuBufferAllでNextパケットはCurrentになる
+		{
+			unsigned int show;
 
-        code = Show_Bits(32);
+			// This is contrary to the spec but is more resilient to some
+			// stream corruption scenarios.
+			BitsLeft = ((BitsLeft + 7) / 8) * 8;
+
+			while (1)
+			{
+				//show = Show_Bits(24);
+				show=( (((unsigned __int64)CurrentBfr<<32) + NextBfr)>>(8+BitsLeft) ) & 0x00ffffff;	//8=32-24
+				if (show == 0x000001)
+					break;
+
+				//Flush_Buffer(8);
+				if (8 < BitsLeft)
+					BitsLeft -= 8;
+				else
+					Flush_Buffer_All(8);
+
+				if (Stop_Flag == true)
+					break;
+			}
+		}
+
+
+        //code = Show_Bits(32);
+		code = (((unsigned __int64)CurrentBfr<<32) + NextBfr)>>(BitsLeft);
         switch (code)
         {
             case 0x1be:

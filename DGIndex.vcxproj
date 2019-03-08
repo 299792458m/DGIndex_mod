@@ -125,10 +125,9 @@
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <AdditionalOptions>/Qvec-report:1 %(AdditionalOptions)</AdditionalOptions>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
-      <EnableEnhancedInstructionSet>StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
-      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
+      <AssemblerOutput>AssemblyAndSourceCode</AssemblerOutput>
+      <EnableEnhancedInstructionSet>StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>

@@ -207,7 +207,8 @@ __forceinline static void next_start_code()
 
     while (1)
     {
-        show = Show_Bits(24);
+        //show = Show_Bits(24);
+		show=( (((unsigned __int64)CurrentBfr<<32) + NextBfr)>>(32-24+BitsLeft) ) & 0x00ffffff;
         if (Stop_Flag == true)
             return;
         if (show == 0x000001)
