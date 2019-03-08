@@ -547,7 +547,7 @@ retry_sync:
             // We can't check so just accept this sync byte.
         }
 
-		/* 毎パケットごとに処理する必要はない(無駄に時間がかかる)のでGOP毎？に変更
+		/* //毎パケットごとに処理する必要はない(無駄に時間がかかる)のでGOP毎？に変更
 		// Record the location of the start of the packet. This will be used
         // for indexing when an I frame is detected.
 		if (D2V_Flag)
@@ -2703,7 +2703,7 @@ void Next_File()
         }
     }
     else
-    {
+    {	//last file
         buffer_invalid = Rdbfr + Read;
         p = Rdbfr + Read;
         while (p < Rdbfr + BUFFER_SIZE) *p++ = 0xFF;

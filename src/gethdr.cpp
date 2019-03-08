@@ -164,9 +164,10 @@ int Get_Hdr(int mode)
 					//ATSC transport(*.ts)
 					if (SystemStream_Flag == TRANSPORT_STREAM)
 					{
-						//ファイルポインタはバッファの終端、rdptrはパケットの先頭になっている ptrは32bitなので注意(ファイルポインタは2Gを超える)
-						CurrentPackHeaderPosition = _telli64(Infile[CurrentFile]) - BUFFER_SIZE + (Rdptr - Rdbfr)
-													- TransportPacketSize + CurrentPackSkipedLength - 8 + (32 - BitsLeft)/8;
+						//ファイルポインタはバッファの終端(正確には読み込んだところまで)、rdptrはパケットの先頭になっている ptrは32bitなので注意(ファイルポインタは2Gを超える)
+						//Readは終端読み込みの時のためにBUFFER_SIZEの代わりに使ってるが、あまりちゃんと確認してない
+						CurrentPackHeaderPosition = _telli64(Infile[CurrentFile]) - Read + (Rdptr - Rdbfr)
+							- TransportPacketSize + CurrentPackSkipedLength - 8 + (32 - BitsLeft)/8;
 
 					}
 					//PVA transport 同じようにやれるけど、サンプルがなく確認ができないのでそのまま(Next_PVA_Packetも変えてない)
@@ -202,7 +203,7 @@ int Get_Hdr(int mode)
             case PICTURE_START_CODE:
                 if (SystemStream_Flag != ELEMENTARY_STREAM){
 					if (SystemStream_Flag == TRANSPORT_STREAM){
-						CurrentPackHeaderPosition = _telli64(Infile[CurrentFile]) - BUFFER_SIZE + (Rdptr - Rdbfr)
+						CurrentPackHeaderPosition = _telli64(Infile[CurrentFile]) - Read + (Rdptr - Rdbfr)
 													- TransportPacketSize + CurrentPackSkipedLength - 8 + (32 - BitsLeft)/8;
 					}
 					position = CurrentPackHeaderPosition;
@@ -424,7 +425,8 @@ static void picture_header(__int64 start, boolean HadSequenceHeader, boolean Had
     if (d2v_current.type == I_TYPE)
     {
         d2v_current.file = process.startfile = CurrentFile;
-        process.startloc = _telli64(Infile[CurrentFile]);
+        //process.startloc = _telli64(Infile[CurrentFile]);
+		process.startloc = CurrentPackHeaderPosition;	//バッファに読み込み完了した時点で終了してしまうので何とかならんかね
         d2v_current.lba = process.startloc/SECTOR_SIZE - 1;
         if (d2v_current.lba < 0)
         {

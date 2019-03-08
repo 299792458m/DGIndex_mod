@@ -30,20 +30,15 @@ Global
 		{7BED3DC2-9B7C-446A-997F-9AD4560B1709}.Release|Win32.Build.0 = Release|Win32
 		{7BED3DC2-9B7C-446A-997F-9AD4560B1709}.Release|x64.ActiveCfg = Release|x64
 		{7BED3DC2-9B7C-446A-997F-9AD4560B1709}.Release|x64.Build.0 = Release|x64
-		{13BF3FBA-7CD9-4374-83D5-E001E722E3DE}.Debug|Win32.ActiveCfg = Debug|Win32
-		{13BF3FBA-7CD9-4374-83D5-E001E722E3DE}.Debug|Win32.Build.0 = Debug|Win32
-		{13BF3FBA-7CD9-4374-83D5-E001E722E3DE}.Debug|x64.ActiveCfg = Debug|x64
-		{13BF3FBA-7CD9-4374-83D5-E001E722E3DE}.Debug|x64.Build.0 = Debug|x64
-		{13BF3FBA-7CD9-4374-83D5-E001E722E3DE}.Release|Win32.ActiveCfg = Release|Win32
-		{13BF3FBA-7CD9-4374-83D5-E001E722E3DE}.Release|Win32.Build.0 = Release|Win32
-		{13BF3FBA-7CD9-4374-83D5-E001E722E3DE}.Release|x64.ActiveCfg = Release|x64
-		{13BF3FBA-7CD9-4374-83D5-E001E722E3DE}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {A8ECC1E1-0C76-40AE-BC54-3C8E5054510B}
+	EndGlobalSection
+	GlobalSection(Performance) = preSolution
+		HasPerformanceSessions = true
 	EndGlobalSection
 	GlobalSection(Performance) = preSolution
 		HasPerformanceSessions = true

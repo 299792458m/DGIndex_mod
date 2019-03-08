@@ -114,7 +114,7 @@ __forceinline static void Fill_Next()
     }
 
     CurrentPackHeaderPosition = PackHeaderPosition;
-	CurrentPackSkipedLength = PackSkipedLength;
+	CurrentPackSkipedLength = PackSkipedLength;		//現在のパケット先頭までのbyte数
     if (SystemStream_Flag != ELEMENTARY_STREAM && Rdptr > Rdmax - 4 && !AudioOnly_Flag)
     {
         if (Rdptr >= Rdmax)
