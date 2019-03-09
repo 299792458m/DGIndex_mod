@@ -1,6 +1,5 @@
 ﻿# DGIndex_mod
 ## a fork from maki's MPEG2DecPlus 0.1.1
--------
 DGIndexの速度向上版(DGDecではない)  
 ・コマンドラインからのd2v生成以外のデバッグをしていない(AAC抽出処理もいくつかのバイナリが一致することを確認しただけ)  
 ・その他の影響確認をちゃんとしてない  
