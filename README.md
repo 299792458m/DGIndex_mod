@@ -1,8 +1,12 @@
 # DGIndex_mod
-a fork of maki's MPEG2DecPlus 0.1.1
+a fork from maki's MPEG2DecPlus 0.1.1
 
 
-mod
+mod by 299792458m
+190309
+速度調整
+(SSE2でも300MB/s位になった)
+
 190308
 GUIで落ちることがあるエンバグ修正
 
