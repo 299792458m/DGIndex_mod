@@ -360,6 +360,7 @@ NEW_VERSION:
         }
     }
 
+
     // Perform application initialization
     hInst = hInstance;
 
@@ -1130,6 +1131,8 @@ proceed:
 
                         if (D2VFile != 0)
                         {
+							setvbuf(D2VFile,NULL,_IOFBF,16384);	//バッファリングしてみる
+
                             if (LogQuants_Flag)
                             {
                                 // Initialize quant matric logging.

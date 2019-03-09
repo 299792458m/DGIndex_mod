@@ -186,27 +186,15 @@ int Get_Hdr(int mode)
                 // Index the location of the sequence header for the D2V file.
                 // We prefer to index the sequence header corresponding to this
                 // GOP, but if one doesn't exist, we index the picture header of the I frame.
-                if (SystemStream_Flag != ELEMENTARY_STREAM){
-					//ATSC transport(*.ts)
-					if (SystemStream_Flag == TRANSPORT_STREAM)
-					{
-						//ファイルポインタはバッファの終端(正確には読み込んだところまで)、rdptrはパケットの先頭になっている ptrは32bitなので注意(ファイルポインタは2Gを超える)
-						//Readは終端読み込みの時のためにBUFFER_SIZEの代わりに使ってるが、あまりちゃんと確認してない
-						CurrentPackHeaderPosition = _telli64(Infile[CurrentFile]) - Read + (Rdptr - Rdbfr)
-							- TransportPacketSize + CurrentPackSkipedLength - 8 + (32 - BitsLeft)/8;
-
-					}
-					//PVA transport 同じようにやれるけど、サンプルがなく確認ができないのでそのまま(Next_PVA_Packetも変えてない)
-					//else if (SystemStream_Flag == PVA_STREAM)
-					//ES transport (*.vob?) 本関数前のコメントにもある通り直接計算してる
-
+                if (SystemStream_Flag != ELEMENTARY_STREAM)
 					d2v_current.position = CurrentPackHeaderPosition;
-				}
                 else
                 {
 //                  dprintf("DGIndex: Index sequence header at %d\n", Rdptr - 8 + (32 - BitsLeft)/8);
-                    d2v_current.position = _telli64(Infile[CurrentFile]) - BUFFER_SIZE + (Rdptr - Rdbfr)
-                                           - 8 + (32 - BitsLeft)/8;
+                    d2v_current.position = _telli64(Infile[CurrentFile])
+                                           - (BUFFER_SIZE - (Rdptr - Rdbfr))
+                                           - 8
+                                           + (32 - BitsLeft)/8;
                 }
                 Get_Bits(32);
                 sequence_header();
@@ -227,16 +215,13 @@ int Get_Hdr(int mode)
                 break;
 
             case PICTURE_START_CODE:
-                if (SystemStream_Flag != ELEMENTARY_STREAM){
-					if (SystemStream_Flag == TRANSPORT_STREAM){
-						CurrentPackHeaderPosition = _telli64(Infile[CurrentFile]) - Read + (Rdptr - Rdbfr)
-													- TransportPacketSize + CurrentPackSkipedLength - 8 + (32 - BitsLeft)/8;
-					}
+                if (SystemStream_Flag != ELEMENTARY_STREAM)
 					position = CurrentPackHeaderPosition;
-				}
                 else
-                    position = _telli64(Infile[CurrentFile]) - BUFFER_SIZE + (Rdptr - Rdbfr)
-                                           - 8 + (32 - BitsLeft)/8;
+                    position = _telli64(Infile[CurrentFile])
+                                           - (BUFFER_SIZE - (Rdptr - Rdbfr))
+                                           - 8
+                                           + (32 - BitsLeft)/8;
                 Get_Bits(32);
                 picture_header(position, HadSequenceHeader, HadGopHeader);
                 return 0;
@@ -452,7 +437,7 @@ static void picture_header(__int64 start, boolean HadSequenceHeader, boolean Had
     {
         d2v_current.file = process.startfile = CurrentFile;
         //process.startloc = _telli64(Infile[CurrentFile]);
-		process.startloc = _telli64(Infile[CurrentFile]) - Read + (Rdptr - Rdbfr);	//バッファに読み込み完了した時点で終了してしまうので何とかしてみた
+		process.startloc = CurrentByte - Read + (Rdptr - Rdbfr);	//バッファに読み込み完了した時点で終了してしまうので何とかしてみた
         d2v_current.lba = process.startloc/SECTOR_SIZE - 1;
         if (d2v_current.lba < 0)
         {

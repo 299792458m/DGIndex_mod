@@ -32,6 +32,7 @@ int _donread(int fd, void *buffer, unsigned int count)
 {
     int bytes;
     bytes = _read(fd, buffer, count);
+	CurrentByte = _telli64(fd);	//Infile[CurrentFile]
     return bytes;
 }
 
@@ -547,20 +548,20 @@ retry_sync:
             // We can't check so just accept this sync byte.
         }
 
-		/* //毎パケットごとに処理する必要はない(無駄に時間がかかる)のでGOP毎？に変更
+		
 		// Record the location of the start of the packet. This will be used
         // for indexing when an I frame is detected.
 		if (D2V_Flag)
         {
-            PackHeaderPosition = _telli64(Infile[CurrentFile])
-                                 - (__int64)BUFFER_SIZE + (__int64)Rdptr - (__int64)Rdbfr - 1;
+            PackHeaderPosition = CurrentByte
+                                 - (__int64)Read + (__int64)Rdptr - (__int64)Rdbfr - 1;//ファイル終端ではバッファより読み込み量が少なくなるのでBUFFERではなくRead
 
 			// For M2TS (blueray) files, index the extra 4 bytes in front of the sync byte,
 			// because DGDecode will expect to see them.
 			if (TransportPacketSize == 192)
 				PackHeaderPosition -= 4;
 
-        }*/
+        }
         --Packet_Length; // swallow the sync_byte
 
         code = Get_Short();
@@ -706,7 +707,6 @@ retry_sync:
             Bitrate_Monitor += (Rdmax - Rdptr);
             if (AudioOnly_Flag)
                 SKIP_TRANSPORT_PACKET_BYTES(Packet_Length);
-			PackSkipedLength=Packet_Length;
             return;
         }
 
@@ -1457,7 +1457,6 @@ oops2:
         // fallthrough case
         // skip remaining bytes in current packet
         SKIP_TRANSPORT_PACKET_BYTES(Packet_Length);
-		PackSkipedLength=Packet_Length;
 	}
 }
 
@@ -1524,8 +1523,8 @@ void Next_PVA_Packet()
         // for indexing when an I frame is detected.
         if (D2V_Flag)
         {
-            PackHeaderPosition = _telli64(Infile[CurrentFile])
-                                 - (__int64)BUFFER_SIZE + (__int64)Rdptr - (__int64)Rdbfr - 3;
+            PackHeaderPosition = CurrentByte
+                                 - (__int64)Read + (__int64)Rdptr - (__int64)Rdbfr - 3;
         }
 
         // Pick up the remaining packet header fields.
@@ -1772,8 +1771,8 @@ void Next_Packet()
             case PACK_START_CODE:
                 if (D2V_Flag)
                 {
-                    PackHeaderPosition = _telli64(Infile[CurrentFile]);
-                    PackHeaderPosition = PackHeaderPosition - (__int64)BUFFER_SIZE + (__int64)Rdptr - 4 - (__int64)Rdbfr;
+                    PackHeaderPosition = CurrentByte;
+                    PackHeaderPosition = PackHeaderPosition - (__int64)Read + (__int64)Rdptr - 4 - (__int64)Rdbfr;
                 }
                 if (((tmp = Get_Byte()) & 0xf0) == 0x20)
                 {

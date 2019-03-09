@@ -134,7 +134,7 @@ XTN bool bIsWindowsXPorLater;
 #define CHROMA444       3
 
 #define SECTOR_SIZE             2048
-#define BUFFER_SIZE             131072
+#define BUFFER_SIZE             4194304
 #define MAX_FILE_NUMBER         512
 #define MAX_PICTURES_PER_GOP    500
 #define MAX_GOPS                1000000
@@ -306,7 +306,6 @@ XTN int SystemStream_Flag;
 #define PVA_STREAM 3
 XTN int program_stream_type;
 XTN __int64 PackHeaderPosition;
-XTN __int64 PackSkipedLength;
 
 XTN int LeadingBFrames;
 XTN int ForceOpenGops;
