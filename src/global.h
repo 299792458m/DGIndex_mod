@@ -134,7 +134,7 @@ XTN bool bIsWindowsXPorLater;
 #define CHROMA444       3
 
 #define SECTOR_SIZE             2048
-#define BUFFER_SIZE             4194304
+#define BUFFER_SIZE             1048576
 #define MAX_FILE_NUMBER         512
 #define MAX_PICTURES_PER_GOP    500
 #define MAX_GOPS                1000000
