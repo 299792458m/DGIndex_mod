@@ -36,7 +36,7 @@ void Next_File(void);
 GXTN unsigned char *Rdbfr, *Rdptr, *Rdmax;
 GXTN unsigned int BitsLeft, CurrentBfr, NextBfr, Val, Read;
 GXTN __int64 CurrentPackHeaderPosition;
-GXTN __int64 CurrentByte;
+GXTN __int64 Buffbyte;
 
 __forceinline static unsigned int Show_Bits(unsigned int N)
 {

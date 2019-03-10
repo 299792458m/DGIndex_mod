@@ -774,7 +774,7 @@ another:
         else if ((ptr = strstr(ucCmdLine,"-BATCH-FILES=")) || (ptr = strstr(ucCmdLine,"-BF=")))
         {
             FILE *bf;
-            char line[1024];
+            char line[DG_MAX_PATH];
 
             ptr = lpCmdLine + (ptr - ucCmdLine);
             ptr  = strstr(ptr, delimiter1) + 1;
@@ -798,7 +798,7 @@ another:
             bf = fopen(cwd, "r");
             if (bf != 0)
             {
-                while (fgets(line, 1023, bf) != 0)
+                while (fgets(line, sizeof(line)-1, bf) != 0)
                 {
                     // Zap the newline.
                     line[strlen(line)-1] = 0;

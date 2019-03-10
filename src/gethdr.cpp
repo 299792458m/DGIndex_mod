@@ -440,7 +440,7 @@ static void picture_header(__int64 start, boolean HadSequenceHeader, boolean Had
     {
         d2v_current.file = process.startfile = CurrentFile;
         //process.startloc = _telli64(Infile[CurrentFile]);
-		process.startloc = CurrentByte - Read + (Rdptr - Rdbfr);	//バッファに読み込み完了した時点で終了してしまうので何とかしてみた
+		process.startloc = Buffbyte + (Rdptr - Rdbfr);	//バッファに読み込み完了した時点で終了してしまうので何とかしてみた
         d2v_current.lba = process.startloc/SECTOR_SIZE - 1;
         if (d2v_current.lba < 0)
         {

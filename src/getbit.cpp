@@ -31,8 +31,8 @@ unsigned int start;
 int _donread(int fd, void *buffer, unsigned int count)
 {
     int bytes;
-    bytes = _read(fd, buffer, count);
-	CurrentByte = _telli64(fd);	//Infile[CurrentFile]
+	Buffbyte = _telli64(fd);	//Infile[CurrentFile] 読み込みバッファ先頭のファイル位置
+	bytes = _read(fd, buffer, count);
     return bytes;
 }
 
@@ -553,8 +553,7 @@ retry_sync:
         // for indexing when an I frame is detected.
 		if (D2V_Flag)
         {
-            PackHeaderPosition = CurrentByte
-                                 - (__int64)Read + (__int64)Rdptr - (__int64)Rdbfr - 1;//ファイル終端ではバッファより読み込み量が少なくなるのでBUFFERではなくRead
+            PackHeaderPosition = Buffbyte + (__int64)Rdptr - (__int64)Rdbfr - 1;//ファイル終端ではバッファより読み込み量が少なくなるのでBUFFERではなくRead
 
 			// For M2TS (blueray) files, index the extra 4 bytes in front of the sync byte,
 			// because DGDecode will expect to see them.
@@ -1523,8 +1522,7 @@ void Next_PVA_Packet()
         // for indexing when an I frame is detected.
         if (D2V_Flag)
         {
-            PackHeaderPosition = CurrentByte
-                                 - (__int64)Read + (__int64)Rdptr - (__int64)Rdbfr - 3;
+            PackHeaderPosition = Buffbyte + (__int64)Rdptr - (__int64)Rdbfr - 3;
         }
 
         // Pick up the remaining packet header fields.
@@ -1771,8 +1769,7 @@ void Next_Packet()
             case PACK_START_CODE:
                 if (D2V_Flag)
                 {
-                    PackHeaderPosition = CurrentByte;
-                    PackHeaderPosition = PackHeaderPosition - (__int64)Read + (__int64)Rdptr - 4 - (__int64)Rdbfr;
+                    PackHeaderPosition = Buffbyte + (__int64)Rdptr - 4 - (__int64)Rdbfr;
                 }
                 if (((tmp = Get_Byte()) & 0xf0) == 0x20)
                 {
@@ -3014,7 +3011,7 @@ static int first_video_demux;
 
 void StartVideoDemux(void)
 {
-    char path[1024];
+    char path[DG_MAX_PATH];
     char *p;
 
     strcpy(path, D2VFilePath);
