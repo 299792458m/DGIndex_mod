@@ -40,15 +40,18 @@ GXTN __int64 CurrentByte;
 
 __forceinline static unsigned int Show_Bits(unsigned int N)
 {
-    if (N <= BitsLeft)
-    {
-        return (CurrentBfr << (32 - BitsLeft)) >> (32 - N);
-    }
-    else
-    {
-        N -= BitsLeft;
-        return (((CurrentBfr << (32 - BitsLeft)) >> (32 - BitsLeft)) << N) + (NextBfr >> (32 - N));
-    }
+	int mask = (1<<N)-1;
+	return ( (((unsigned __int64)CurrentBfr<<32) + NextBfr)>>(32 - N + BitsLeft) ) & mask;
+
+    //if (N <= BitsLeft)
+    //{
+    //    return (CurrentBfr << (32 - BitsLeft)) >> (32 - N);
+    //}
+    //else
+    //{
+    //    N -= BitsLeft;
+    //    return (((CurrentBfr << (32 - BitsLeft)) >> (32 - BitsLeft)) << N) + (NextBfr >> (32 - N));
+    //}
 }
 
 __forceinline static unsigned int Get_Bits(unsigned int N)
@@ -114,7 +117,7 @@ __forceinline static void Fill_Next()
     }
 
     CurrentPackHeaderPosition = PackHeaderPosition;
-    if (SystemStream_Flag != ELEMENTARY_STREAM && Rdptr > Rdmax - 4 && !AudioOnly_Flag)
+    if (Rdptr > Rdmax - 4 && SystemStream_Flag != ELEMENTARY_STREAM && !AudioOnly_Flag)
     {
         if (Rdptr >= Rdmax)
             Next_Packet();
@@ -206,8 +209,7 @@ __forceinline static void next_start_code()
 
     while (1)
     {
-        //show = Show_Bits(24);
-		show=( (((unsigned __int64)CurrentBfr<<32) + NextBfr)>>(32-24+BitsLeft) ) & 0x00ffffff;
+        show = Show_Bits(24);
         if (Stop_Flag == true)
             return;
         if (show == 0x000001)

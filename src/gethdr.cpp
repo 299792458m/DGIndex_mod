@@ -157,83 +157,29 @@ int Get_Hdr(int mode)
 
 			while (1)
 			{
-				show=( (((unsigned __int64)CurrentBfr<<32) + NextBfr)>>(8+BitsLeft) ) & 0x00ffffff;	//8=32-24	Show_Bits(24);
+				show = Show_Bits(24);
 				
 				if (show == 0x00000001)		break;
 				if (Stop_Flag == true)		break;
 
 				if (vmuxactive) Flush_Buffer(8);	//è]óàèàóù
-				else{
+				else{								//VideoDemuxÇåƒÇŒÇ»Ç¢
 					if (8 < BitsLeft)
 						BitsLeft -= 8;
 					else{
+						//VideoDemux();
 						BitsLeft += 24;
-						CurrentBfr = NextBfr;		//VideoDemuxÇåƒÇŒÇ»Ç¢ÇæÇØÇ™è]óàèàóùÇ∆ÇÃà·Ç¢
+						CurrentBfr = NextBfr;
 
-						{//Fill_Next();
-							extern unsigned char *buffer_invalid;
+						Fill_Next();
 
-							if (Rdptr >= buffer_invalid)
-							{
-								// Ran out of good data.
-								if (LoopPlayback)
-									ThreadKill(END_OF_DATA_KILL);
-								Stop_Flag = 1;
-								NextBfr = 0xffffffff;
-								break;
-							}
-
-							CurrentPackHeaderPosition = PackHeaderPosition;
-							if (Rdptr > Rdmax - 4 && SystemStream_Flag != ELEMENTARY_STREAM && !AudioOnly_Flag)
-							{
-								if (Rdptr >= Rdmax)
-									Next_Packet();
-								NextBfr = Get_Byte() << 24;
-
-								if (Rdptr >= Rdmax)
-									Next_Packet();
-								NextBfr += Get_Byte() << 16;
-
-								if (Rdptr >= Rdmax)
-									Next_Packet();
-								NextBfr += Get_Byte() << 8;
-
-								if (Rdptr >= Rdmax)
-									Next_Packet();
-								NextBfr += Get_Byte();
-							}
-							else if (Rdptr <= Rdbfr+BUFFER_SIZE - 4)
-							{
-								NextBfr = (*Rdptr << 24) + (*(Rdptr+1) << 16) + (*(Rdptr+2) << 8) + *(Rdptr+3);
-
-								Rdptr += 4;
-							}
-							else
-							{
-								if (Rdptr >= Rdbfr+BUFFER_SIZE)
-									Fill_Buffer();
-								NextBfr = *Rdptr++ << 24;
-
-								if (Rdptr >= Rdbfr+BUFFER_SIZE)
-									Fill_Buffer();
-								NextBfr += *Rdptr++ << 16;
-
-								if (Rdptr >= Rdbfr+BUFFER_SIZE)
-									Fill_Buffer();
-								NextBfr += *Rdptr++ << 8;
-
-								if (Rdptr >= Rdbfr+BUFFER_SIZE)
-									Fill_Buffer();
-								NextBfr += *Rdptr++;
-							}
-						}
 					}
 				}
 			}
 		}
 
 
-		code = (((unsigned __int64)CurrentBfr<<32) + NextBfr)>>(BitsLeft);	//Show_Bits(32);
+		code = Show_Bits(32);
         switch (code)
         {
             case 0x1be:
