@@ -142,41 +142,98 @@ int Get_Hdr(int mode)
     __int64 position = 0;
     boolean HadSequenceHeader = false;
     boolean HadGopHeader = false;
+	bool vmuxactive = (MuxFile == (FILE *) 0xffffffff || MuxFile <= 0) ? false : true;
 
-    for (;;)
+	for (;;)
     {
         // Look for next_start_code.
         if (Stop_Flag == true)
             return 1;
-        //next_start_code();	//パケット読み込み・処理(-->FlushBuffer(All)->FillNext->NextPacket) FlushuBufferAllでNextパケットはCurrentになる
-		{
+        
+		{//next_start_code();	//パケット読み込み・処理(-->FlushBuffer(All)->FillNext->NextPacket) FlushuBufferAllでNextパケットはCurrentになる
+			//速度最適化処理
 			unsigned int show;
-
-			// This is contrary to the spec but is more resilient to some
-			// stream corruption scenarios.
-			BitsLeft = ((BitsLeft + 7) / 8) * 8;
+			BitsLeft = ((BitsLeft + 7) / 8) * 8;	//asmは (B+7)&-8になってる
 
 			while (1)
 			{
-				//show = Show_Bits(24);
-				show=( (((unsigned __int64)CurrentBfr<<32) + NextBfr)>>(8+BitsLeft) ) & 0x00ffffff;	//8=32-24
-				if (show == 0x000001)
-					break;
+				show=( (((unsigned __int64)CurrentBfr<<32) + NextBfr)>>(8+BitsLeft) ) & 0x00ffffff;	//8=32-24	Show_Bits(24);
+				
+				if (show == 0x00000001)		break;
+				if (Stop_Flag == true)		break;
 
-				//Flush_Buffer(8);
-				if (8 < BitsLeft)
-					BitsLeft -= 8;
-				else
-					Flush_Buffer_All(8);
+				if (vmuxactive) Flush_Buffer(8);	//従来処理
+				else{
+					if (8 < BitsLeft)
+						BitsLeft -= 8;
+					else{
+						BitsLeft += 24;
+						CurrentBfr = NextBfr;		//VideoDemuxを呼ばないだけが従来処理との違い
 
-				if (Stop_Flag == true)
-					break;
+						{//Fill_Next();
+							extern unsigned char *buffer_invalid;
+
+							if (Rdptr >= buffer_invalid)
+							{
+								// Ran out of good data.
+								if (LoopPlayback)
+									ThreadKill(END_OF_DATA_KILL);
+								Stop_Flag = 1;
+								NextBfr = 0xffffffff;
+								break;
+							}
+
+							CurrentPackHeaderPosition = PackHeaderPosition;
+							if (Rdptr > Rdmax - 4 && SystemStream_Flag != ELEMENTARY_STREAM && !AudioOnly_Flag)
+							{
+								if (Rdptr >= Rdmax)
+									Next_Packet();
+								NextBfr = Get_Byte() << 24;
+
+								if (Rdptr >= Rdmax)
+									Next_Packet();
+								NextBfr += Get_Byte() << 16;
+
+								if (Rdptr >= Rdmax)
+									Next_Packet();
+								NextBfr += Get_Byte() << 8;
+
+								if (Rdptr >= Rdmax)
+									Next_Packet();
+								NextBfr += Get_Byte();
+							}
+							else if (Rdptr <= Rdbfr+BUFFER_SIZE - 4)
+							{
+								NextBfr = (*Rdptr << 24) + (*(Rdptr+1) << 16) + (*(Rdptr+2) << 8) + *(Rdptr+3);
+
+								Rdptr += 4;
+							}
+							else
+							{
+								if (Rdptr >= Rdbfr+BUFFER_SIZE)
+									Fill_Buffer();
+								NextBfr = *Rdptr++ << 24;
+
+								if (Rdptr >= Rdbfr+BUFFER_SIZE)
+									Fill_Buffer();
+								NextBfr += *Rdptr++ << 16;
+
+								if (Rdptr >= Rdbfr+BUFFER_SIZE)
+									Fill_Buffer();
+								NextBfr += *Rdptr++ << 8;
+
+								if (Rdptr >= Rdbfr+BUFFER_SIZE)
+									Fill_Buffer();
+								NextBfr += *Rdptr++;
+							}
+						}
+					}
+				}
 			}
 		}
 
 
-        //code = Show_Bits(32);
-		code = (((unsigned __int64)CurrentBfr<<32) + NextBfr)>>(BitsLeft);
+		code = (((unsigned __int64)CurrentBfr<<32) + NextBfr)>>(BitsLeft);	//Show_Bits(32);
         switch (code)
         {
             case 0x1be:

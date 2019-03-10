@@ -548,7 +548,7 @@ retry_sync:
             // We can't check so just accept this sync byte.
         }
 
-		
+
 		// Record the location of the start of the packet. This will be used
         // for indexing when an I frame is detected.
 		if (D2V_Flag)
@@ -3033,13 +3033,14 @@ void StartVideoDemux(void)
     else
         strcat(p, "demuxed.m1v");
     MuxFile = fopen(path, "wb");
-    if (MuxFile == (FILE *) 0)
+	if (MuxFile == (FILE *) 0)
     {
         MessageBox(hWnd, "Cannot open file for video demux output.", NULL, MB_OK | MB_ICONERROR);
-        MuxFile = (FILE *) 0xffffffff;
-        return;
+		MuxFile = (FILE *) 0xffffffff;
+		return;
     }
-    first_video_demux = 1;
+	setvbuf(MuxFile,NULL,_IOFBF,BUFFER_SIZE);	//バッファリング
+	first_video_demux = 1;
 }
 
 void StopVideoDemux(void)
