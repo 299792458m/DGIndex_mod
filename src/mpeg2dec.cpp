@@ -536,7 +536,7 @@ static BOOL GOPBack()
     for (;;)
     {
         endloc = startloc;
-        startloc -= SECTOR_SIZE<<4;
+        startloc -= SECTOR_SIZE<<4;	//back 16 sectors
 
         if (startloc >= 0)
         {
@@ -554,8 +554,9 @@ static BOOL GOPBack()
 
         for (;;)
         {
-            curloc = _telli64(Infile[process.startfile]);
-            if (curloc >= endloc) break;
+            //curloc = _telli64(Infile[process.startfile]);
+			curloc = Buffbyte + (Rdptr - Rdbfr);				//ファイルポインタをseekで変更されてたりするので注意要だが、とりあえず
+            if (curloc >= endloc) break;	//スタート位置を超えたらbreak→startlocを変えてリスタート
             Get_Hdr(0);
             if (Stop_Flag == true)
                 ThreadKill(MISC_KILL);
