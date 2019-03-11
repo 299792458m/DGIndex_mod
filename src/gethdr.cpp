@@ -439,7 +439,7 @@ static void picture_header(__int64 start, boolean HadSequenceHeader, boolean Had
     if (d2v_current.type == I_TYPE)
     {
         d2v_current.file = process.startfile = CurrentFile;
-		process.startloc = (Buffbyte + (Rdptr - Rdbfr))/SECTOR_SIZE*SECTOR_SIZE;	//バッファに読み込み完了した時点で終了してしまうので何とかしてみた
+		process.startloc = Buffbyte + (Rdptr - Rdbfr);	//バッファに読み込み完了した時点で終了してしまうので何とかしてみた
         d2v_current.lba = process.startloc/SECTOR_SIZE;	//-1というのは従来のバッファ(2048byte)読み込み分を戻してた？？？
         if (d2v_current.lba < 0)
         {
