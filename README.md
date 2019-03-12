@@ -12,7 +12,7 @@ DGIndexのd2V生成速度向上版(DGDecではない)
 のでexperimental
 
 ### known issue
-- GUIで操作でBackwordがたまにロックする(マウスでは動かせるが)
+- GUIでBackward操作がたまにロックする(マウスでは動かせる)
 
 ### 変更内容
 - ファイルポインタ取得タイミング変更
