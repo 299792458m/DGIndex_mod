@@ -134,7 +134,7 @@ XTN bool bIsWindowsXPorLater;
 #define CHROMA444       3
 
 #define SECTOR_SIZE             2048
-#define BUFFER_SIZE             1048576
+#define BUFFER_SIZE             524288
 #define MAX_FILE_NUMBER         512
 #define MAX_PICTURES_PER_GOP    500
 #define MAX_GOPS                1000000
@@ -209,7 +209,7 @@ do {                                                                \
 
 #define TRACK_PITCH     30000
 
-#define DG_MAX_PATH 4096
+#define DG_MAX_PATH 2048
 
 typedef struct {
     int         gop_start;
@@ -342,6 +342,7 @@ XTN HDC hDC;
 XTN unsigned int CLIParseD2V;
 XTN int CLINoProgress;
 XTN int CLIActive;
+#define CLITimeout 5000
 XTN char CLIPreview;
 XTN char ExitOnEnd;
 XTN char ExePath[DG_MAX_PATH];
@@ -398,7 +399,7 @@ XTN double max_rate;
 
 XTN int Clip_Left, Clip_Right, Clip_Top, Clip_Bottom;
 
-XTN int Infile[MAX_FILE_NUMBER];
+XTN FILE *Infile[MAX_FILE_NUMBER];
 XTN char *Infilename[MAX_FILE_NUMBER];
 XTN __int64 Infilelength[MAX_FILE_NUMBER];
 XTN __int64 Infiletotal;
@@ -489,12 +490,16 @@ XTN int LogTimestamps_Flag;
 XTN int StartLogging_Flag;
 XTN FILE *Timestamps;
 XTN int InfoLog_Flag;
+XTN FILE* mpafp;
+XTN FILE* mpvfp;
+XTN FILE* pcmfp;
 
 /* gui */
 XTN void Recovery(void);
 XTN void RefreshWindow(bool);
 XTN void CheckFlag(void);
 XTN int parse_cli(LPSTR lpCmdLine, LPSTR ucCmdLine);
+XTN int MessageBoxTimeout(HWND hWnd, LPCSTR lpText, LPCSTR lpCaption, UINT uType, WORD wLanguageId, DWORD dwMilliseconds);
 
 /* idct */
 extern "C" void __fastcall MMX_IDCT(short *block);

@@ -75,6 +75,7 @@ __forceinline static void Flush_Buffer(unsigned int N)
 }
 
 int _donread(int fd, void *buffer, unsigned int count);
+size_t _donfread(void* buffer,size_t size, size_t count, FILE* file);
 
 __forceinline static unsigned int Get_Byte()
 {
@@ -91,7 +92,7 @@ __forceinline static unsigned int Get_Byte()
 
     while (Rdptr >= Rdbfr+BUFFER_SIZE)
     {
-        Read = _donread(Infile[CurrentFile], Rdbfr, BUFFER_SIZE);
+        Read = _donfread(Rdbfr, 1, BUFFER_SIZE, Infile[CurrentFile]);
         if (Read < BUFFER_SIZE)
             Next_File();
 

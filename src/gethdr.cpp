@@ -152,15 +152,12 @@ int Get_Hdr(int mode)
         
 		{//next_start_code();	//パケット読み込み・処理(-->FlushBuffer(All)->FillNext->NextPacket) FlushuBufferAllでNextパケットはCurrentになる
 			//速度最適化処理
-			unsigned int show;
 			BitsLeft = ((BitsLeft + 7) / 8) * 8;	//asmは (B+7)&-8になってる
 
 			while (1)
 			{
-				show = Show_Bits(24);
-				
-				if (show == 0x00000001)		break;
-				if (Stop_Flag == true)		break;
+                if (Stop_Flag == true)		break;  //FillNextの中で変化する
+                if (Show_Bits(24) == 0x00000001)		break;
 
 				if (vmuxactive) Flush_Buffer(8);	//従来処理
 				else{								//VideoDemuxを呼ばない
@@ -194,7 +191,7 @@ int Get_Hdr(int mode)
                 else
                 {
 //                  dprintf("DGIndex: Index sequence header at %d\n", Rdptr - 8 + (32 - BitsLeft)/8);
-                    d2v_current.position = _telli64(Infile[CurrentFile])
+                    d2v_current.position = _ftelli64(Infile[CurrentFile])
                                            - (BUFFER_SIZE - (Rdptr - Rdbfr))
                                            - 8
                                            + (32 - BitsLeft)/8;
@@ -204,11 +201,13 @@ int Get_Hdr(int mode)
                 HadSequenceHeader = true;
                 break;
 
+#if 0
             case SEQUENCE_END_CODE:
                 Get_Bits(32);
                 if (mode == 1)
                     return 1;
                 break;
+#endif
 
             case GROUP_START_CODE:
                 Get_Bits(32);
@@ -221,7 +220,7 @@ int Get_Hdr(int mode)
                 if (SystemStream_Flag != ELEMENTARY_STREAM)
 					position = CurrentPackHeaderPosition;
                 else
-                    position = _telli64(Infile[CurrentFile])
+                    position = _ftelli64(Infile[CurrentFile])
                                            - (BUFFER_SIZE - (Rdptr - Rdbfr))
                                            - 8
                                            + (32 - BitsLeft)/8;
@@ -266,7 +265,7 @@ void sequence_header()
     vbv_buffer_size             = Get_Bits(10);
     constrained_parameters_flag = Get_Bits(1);
 
-    if (load_intra_quantizer_matrix = Get_Bits(1))
+    if ((load_intra_quantizer_matrix = Get_Bits(1)) && (Show_Bits(8) == 8))
     {
         for (i=0; i<64; i++)
             intra_quantizer_matrix[scan[ZIG_ZAG][i]] = Get_Bits(8);
@@ -277,7 +276,7 @@ void sequence_header()
             intra_quantizer_matrix[i] = default_intra_quantizer_matrix[i];
     }
 
-    if (load_non_intra_quantizer_matrix = Get_Bits(1))
+    if ((load_non_intra_quantizer_matrix = Get_Bits(1)) && (Show_Bits(8) != 0))
     {
         for (i=0; i<64; i++)
             non_intra_quantizer_matrix[scan[ZIG_ZAG][i]] = Get_Bits(8);
@@ -481,7 +480,10 @@ static void picture_header(__int64 start, boolean HadSequenceHeader, boolean Had
         {
             ThreadKill(END_OF_DATA_KILL);
         }
+    }
 
+    if (!D2V_Flag || !(Frame_Number % 1000))
+    {
         if (Info_Flag)
             UpdateInfo();
         UpdateWindowText(PICTURE_HEADER);
@@ -886,6 +888,16 @@ static void picture_coding_extension()
     chroma_420_type             = Get_Bits(1);
     progressive_frame           = Get_Bits(1);
     composite_display_flag      = Get_Bits(1);
+
+    if (picture_structure != FRAME_PICTURE)
+    {
+        if (picture_structure == TOP_FIELD)
+            top_field_first = 1;
+        else
+            top_field_first = 0;
+        repeat_first_field = 0;
+        progressive_frame  = 0;
+    }
 
     d2v_current.pf = progressive_frame;
     d2v_current.trf = (top_field_first<<1) + repeat_first_field;
