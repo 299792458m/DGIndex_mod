@@ -240,11 +240,11 @@ void Decode_Picture()
         gop_entries[gop_entries_ndx].cell_id = CELL_ID;
         if (gop_entries_ndx < MAX_PICTURES_PER_GOP - 1)
             gop_entries_ndx++;
-        else
-        {
-            MessageBox(hWnd, "Too many pictures per GOP (>= 500).\nDGIndex will terminate.", NULL, MB_OK | MB_ICONERROR);
-            exit(1);
-        }
+        //else  //drop‚ª‚ ‚Á‚½ê‡‚à–³—‚â‚è‘±‚¯‚³‚¹‚é‚½‚ß‚Éƒ}ƒXƒN
+        //{
+        //    MessageBox(hWnd, "Too many pictures per GOP (>= 500).\nDGIndex will terminate.", NULL, MB_OK | MB_ICONERROR);
+        //    exit(1);
+        //}
     }
     if (D2V_Flag)
     {
