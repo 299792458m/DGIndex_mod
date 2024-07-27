@@ -12,7 +12,7 @@ DGIndexのd2V生成速度向上版(DGDecではない)
 のでexperimental
 
 ### known issue
-- GUIでシークできない(<>ボタンやキーボードの右左)
+- GUIでBackward操作がたまにロックする(マウスでは動かせる)
 
 ### 変更内容
 - ファイルポインタ取得タイミング変更
